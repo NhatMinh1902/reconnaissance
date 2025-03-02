@@ -53,8 +53,7 @@
 
 - You can use the wildcard operator (*) within searches to mean any character or series of characters
 
-
-
+------------------------
 
 > You can use advanced search engine options in many more ways to make your work more efficient.
 
@@ -76,5 +75,19 @@
     ```
     site:s3.amazonaws.com COMPANY_NAME
     ```
+- Look for special extensions that could indicate a sensitive file. In addition to .log, which often indicates log files, search for .php, cfm, asp, .jsp, and .pl, the extensions often used for script files:
+
+    ```
+    site:example.com ext:php
+    site:example.com ext:log
+    ```
+
+-  you can also combine search terms for a more accurate search. For example, this query searches the site **example.com** for text files that contain **password**:
+
+    ```
+    site:example.com ext:txt password
+    ```
+
+- In addition to constructing your own queries, check out the [Google Hacking Database] (https://www.exploit-db.com/google-hacking-database/), a website that hackers and security practitioners use to share Google search queries for finding security-related information.
 
 
