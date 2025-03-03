@@ -96,4 +96,65 @@
 
 ## Subdomain Enumeration
 
+> After finding as many domains on the target as possible, locate as many subdomains on those domains as you can. Each subdomain represents a new angle for attacking the network. The best way to enumerate subdomains is to use automation.
 
+- Tools like `Sublist3r`, `SubBrute`, `Amass`, and `Gobuster` can enumerate subdomains automatically with a variety of wordlists and strategies.
+    - Sublist3r works by querying search engines and online subdomain databases.    - SubBrute is a brute-forcing tool that guesses possible subdomains until it finds real ones.
+    - s. Amass uses a combination of DNS zone transfers, certificate parsing, search engines, and subdomain databases to find subdomains.
+
+- To use many subdomain enumeration tools, you need to feed the program a wordlist of terms likely to appear in subdomains.
+    - Daniel Miessler’s SecLists at https://github.com/danielmiessler/SecLists/ is a pretty extensive one.
+    - use a wordlist generation tool like [Commonspeak2](https://github.com/assetnote/commonspeak2/) to generate wordlists based on the most current internet data.
+
+- Command to remove duplicate items from a set of two wordlists:
+    ```
+    sort -u wordlist1.txt wordlist2.txt
+    # -u option tells sort to return only unique items in the sorted list
+    ```
+- Gobuster is a tool for brute-forcing to discover subdomains, directories, and files on target web servers. Its DNS mode is used for subdomain bruteforcing.
+    ```
+    gobuster dns -d target_domain -w wordlist
+    # use the flag -d to specify the domain you want to brute-force
+    # -w to specify the wordlist
+    ```
+
+- A good tool for automating this process is [Altdns](https://github.com/infosec-au/altdns/), which discovers subdomains with names that are permutations of other subdomain names.
+
+- Also look for subdomains of subdomains. EX: `dev.example.com`, you might find subdomains like `1.dev.example.com`.
+
+## Service Enumeration
+- Nmap: link git
+- With Shodan, you can discover the presence of webcams, web servers, or even power plants based on criteria such as hostnames or IP addresses.
+
+- Alternatives to Shodan include Censys and Project Sonar. Combine the information you gather from different databases for the best results. With these databases, you might also find your target’s IP addresses, certificates, and software versions.
+
+## Directory Brute-Forcing
+
+> The next thing you can do to discover more of the site’s attack surface is brute-force the directories of the web servers you’ve found. Finding directories on servers is valuable, because through them, you might discover hidden admin panels, configuration files, password files, outdated functionalities, database copies, and source code files. Directory brute-forcing can sometimes allow you to directly take over a server!
+
+- Even if you can’t find any immediate exploits, directory information often tells you about the structure and technology of an application.
+
+-  Using `Dirsearch` or `Gobuster` for directory brute-forcing. These tools use wordlists to construct URLs, and then request these URLs from a web server.
+    - **Status code = 200**  the directory or file exists.  This means you can browse to the page and see what Web Hacking Reconnaissance the application is hosting there
+    - **Status code = 404** the directory or file doesn’t exist.
+    - **Status code = 403** it exists but is protected. Examine **403** pages carefully to see if you can bypass the protection to access the content.
+
+    ```
+    ./dirsearch.py -u scanme.nmap.org -e php
+    # -u flag specifies the hostname
+    # e -e flag specifies the file extension to use when constructing URLs
+    ```
+
+- Gobuster’s Dir mode is used to find additional content on a specific domain or subdomain. This includes hidden directories and files.
+    -  the `-u` flag to specify the domain or subdomain you want to brute-force.
+    - `-w` to specify the wordlist you want to use
+    ```
+    gobuster dir -u target_url -w wordlist
+    ```
+
+- Use a screenshot tool like [EyeWitness](https://github.com/FortyNorthSecurity/EyeWitness/) or [Snapper](https://github.com/dxa4481/Snapper/) to automatically verify that a page is hosted on each location.
+
+- EyeWitness accepts a list of URLs and takes screenshots of each page.
+- In a photo gallery app, you can quickly skim these to find the interesting-looking ones. Keep an eye out for hidden services, such as developer or admin panels, directory listing pages, analytics pages, and pages that look outdated and illmaintained. T ese are all common places for vulnerabilities to manifest.
+
+## Spidering the Site
